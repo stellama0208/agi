@@ -39,6 +39,7 @@ import com.google.gapid.perfetto.models.ArgSet;
 import com.google.gapid.perfetto.models.CpuInfo;
 import com.google.gapid.perfetto.models.GpuInfo;
 import com.google.gapid.perfetto.models.ProcessInfo;
+import com.google.gapid.perfetto.models.Selection.MultiSelection;
 import com.google.gapid.perfetto.models.SliceTrack;
 import com.google.gapid.perfetto.models.ThreadInfo;
 import com.google.gapid.perfetto.views.GpuQueuePanel;
@@ -77,6 +78,12 @@ public class ProfileView extends Composite implements Tab, Capture.Listener, Pro
       @Override
       protected Settings settings() {
         return models.settings;
+      }
+
+      @Override
+      public void onSelectionChanged(MultiSelection selection) {
+        super.onSelectionChanged(selection);
+        System.out.println(models.commands.getSelectedCommands());
       }
     });
     traceUi = loading.getContents();
