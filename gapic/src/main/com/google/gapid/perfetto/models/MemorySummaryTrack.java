@@ -238,7 +238,7 @@ public class MemorySummaryTrack extends Track.WithQueryEngine<MemorySummaryTrack
     }
   }
 
-  public static class Values implements Selection, Selection.Builder<Values> {
+  public static class Values implements Selection<Values> {
     public final long[] ts;
     public final long[] dur;
     public final long[] total;
@@ -269,11 +269,6 @@ public class MemorySummaryTrack extends Track.WithQueryEngine<MemorySummaryTrack
     @Override
     public Composite buildUi(Composite parent, State state) {
       return new MemorySelectionView(parent, state, this);
-    }
-
-    @Override
-    public Selection.Builder<Values> getBuilder() {
-      return this;
     }
 
     @Override
@@ -349,11 +344,6 @@ public class MemorySummaryTrack extends Track.WithQueryEngine<MemorySummaryTrack
       return new Values(Arrays.copyOf(newTs, newL), Arrays.copyOf(newDur, newL),
           Arrays.copyOf(newTotal, newL), Arrays.copyOf(newUnused, newL),
           Arrays.copyOf(newBuffCache, newL), newValueKeys);
-    }
-
-    @Override
-    public Selection build() {
-      return this;
     }
   }
 }

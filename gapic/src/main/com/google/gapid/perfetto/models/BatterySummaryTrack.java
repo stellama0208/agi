@@ -224,7 +224,7 @@ public class BatterySummaryTrack extends Track.WithQueryEngine<BatterySummaryTra
     }
   }
 
-  public static class Values implements Selection, Selection.Builder<Values> {
+  public static class Values implements Selection<Values> {
     public final long[] ts;
     public final long[] dur;
     public final long[] capacity;
@@ -255,11 +255,6 @@ public class BatterySummaryTrack extends Track.WithQueryEngine<BatterySummaryTra
     @Override
     public Composite buildUi(Composite parent, State state) {
       return new BatterySelectionView(parent, state, this);
-    }
-
-    @Override
-    public Selection.Builder<Values> getBuilder() {
-      return this;
     }
 
     @Override
@@ -335,11 +330,6 @@ public class BatterySummaryTrack extends Track.WithQueryEngine<BatterySummaryTra
       return new Values(Arrays.copyOf(newTs, newL), Arrays.copyOf(newDur, newL),
           Arrays.copyOf(newCapacity, newL), Arrays.copyOf(newCharge, newL),
           Arrays.copyOf(newCurrent, newL), newValueKeys);
-    }
-
-    @Override
-    public Selection build() {
-      return this;
     }
   }
 }
