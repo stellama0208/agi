@@ -18,10 +18,10 @@ package com.google.gapid.perfetto.views;
 import static com.google.gapid.perfetto.TimeSpan.timeToString;
 import static com.google.gapid.widgets.Widgets.createTableColumn;
 import static com.google.gapid.widgets.Widgets.createTableViewer;
-import static com.google.gapid.widgets.Widgets.createTreeColumn;
 import static com.google.gapid.widgets.Widgets.packColumns;
 
 import com.google.gapid.perfetto.models.MemorySummaryTrack;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
