@@ -707,9 +707,41 @@ public class Widgets {
     return result;
   }
 
+  public static TreeViewerColumn createTreeColumn(TreeViewer viewer, String title, int index) {
+    TreeViewerColumn result = new TreeViewerColumn(viewer, SWT.NONE, index);
+    TreeColumn column = result.getColumn();
+    column.setText(title);
+    column.setResizable(true);
+    return result;
+  }
+
   public static <T> TreeViewerColumn createTreeColumn(
       TreeViewer viewer, String title, Function<T, String> labelProvider) {
     return createTreeColumn(viewer, title, labelProvider, d -> null);
+  }
+
+  public static <T> TreeViewerColumn createTreeColumn(
+      TreeViewer viewer, String title, Function<T, String> labelProvider, int index) {
+    return createTreeColumn(viewer, title, labelProvider, d -> null, index);
+  }
+
+  public static <T> TreeViewerColumn createTreeColumn(TreeViewer viewer, String title,
+      Function<T, String> labelProvider, Function<T, Image> imageProvider, int index) {
+    TreeViewerColumn column = createTreeColumn(viewer, title, index);
+    column.setLabelProvider(new ColumnLabelProvider() {
+      @Override
+      @SuppressWarnings("unchecked")
+      public String getText(Object element) {
+        return labelProvider.apply((T)element);
+      }
+
+      @Override
+      @SuppressWarnings("unchecked")
+      public Image getImage(Object element) {
+        return imageProvider.apply((T)element);
+      }
+    });
+    return column;
   }
 
   public static <T> TreeViewerColumn createTreeColumn(TreeViewer viewer, String title,
