@@ -163,7 +163,7 @@ public abstract class LinkifiedTree<T, F> extends Composite {
       setLayout(layout);
     }
 
-    TreeViewerColumn column = createTreeColumn(viewer, title, labels, 1);
+    TreeViewerColumn column = createTreeColumn(viewer, title, labels);
     ((TreeColumnLayout)getLayout())
         .setColumnData(column.getColumn(), new ColumnWeightData(0, width));
     return column;
@@ -187,6 +187,10 @@ public abstract class LinkifiedTree<T, F> extends Composite {
 
   public Control getControl() {
     return viewer.getControl();
+  }
+
+  public TreeViewer getTree() {
+    return  viewer;
   }
 
   public T getSelection() {

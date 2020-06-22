@@ -33,6 +33,7 @@ import com.google.gapid.models.Profile;
 import com.google.gapid.models.Profile.Duration;
 import com.google.gapid.perfetto.views.RootPanel;
 import com.google.gapid.perfetto.views.RootPanel.MouseMode;
+import com.google.gapid.perfetto.views.StyleConstants.Colors;
 import com.google.gapid.proto.service.Service;
 import com.google.gapid.util.Loadable;
 import com.google.gapid.util.Messages;
@@ -44,6 +45,7 @@ import java.util.function.IntConsumer;
 import java.util.logging.Logger;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -51,6 +53,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.TreeItem;
 
 public class PerformanceView extends Composite
     implements Tab, Capture.Listener, CommandStream.Listener, Profile.Listener {
@@ -78,69 +81,100 @@ public class PerformanceView extends Composite
       // loading.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       // this.redraw();
       // this.requestLayout();
+
+      double addition = Math.random();
       switch (m) {
         case All:
-          tree.addColumn("Texture fetch stall", $ -> String.format("%.3f", 6 * (0.5+1*Math.random())));
-          tree.addColumn("Texture L1 miss rate", $ -> String.format("%.3f", 60 * (0.5+1*Math.random())));
-          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*Math.random())));
-          tree.addColumn("GPU bus busy percentage", $ -> String.format("%.3f", 30 * (0.5+1*Math.random())));
-          tree.addColumn("Fragment EFU instructions/second", $ -> String.format("%.3f", 1000000 * (0.5+1*Math.random())));
-          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*Math.random())));
-          tree.addColumn("GPU frequency", $ -> String.format("%.3f", 240000000.0 * (0.8+0.4*Math.random())));
+          tree.addColumn("Texture fetch stall", $ -> String.format("%.3f", 6 * (0.5+1*addition)));
+          tree.addColumn("Texture L1 miss rate", $ -> String.format("%.3f", 60 * (0.5+1*addition)));
+          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*addition)));
+          tree.addColumn("GPU bus busy percentage", $ -> String.format("%.3f", 30 * (0.5+1*addition)));
+          tree.addColumn("Fragment EFU instructions/second", $ -> String.format("%.3f", 1000000 * (0.5+1*addition)));
+          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*addition)));
+          tree.addColumn("GPU frequency", $ -> String.format("%.3f", 240000000.0 * (0.8+0.4*addition)));
           tree.packColumn();
           tree.refresh();
           break;
         case GPU:
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("GPU bus busy percentage", $ -> String.format("%.3f", 30 * (0.5+1*Math.random())));
-          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*Math.random())));
-          tree.addColumn("GPU frequency", $ -> String.format("%.3f", 240000000.0 * (0.8+0.4*Math.random())));
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          tree.addColumn("GPU bus busy percentage", $ -> String.format("%.3f", 30 * (0.5+1*addition)));
+          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*addition)));
+          tree.addColumn("GPU frequency", $ -> String.format("%.3f", 240000000.0 * (0.8+0.4*addition)));
           tree.packColumn();
           tree.refresh();
           break;
         case Texture:
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*Math.random())));
-          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*Math.random())));
-          tree.addColumn("Texture L1 miss rate", $ -> String.format("%.3f", 60 * (0.5+1*Math.random())));
-          tree.addColumn("Texture fetch stall", $ -> String.format("%.3f", 6 * (0.5+1*Math.random())));
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*addition)));
+          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*addition)));
+          tree.addColumn("Texture L1 miss rate", $ -> String.format("%.3f", 60 * (0.5+1*addition)));
+          tree.addColumn("Texture fetch stall", $ -> String.format("%.3f", 6 * (0.5+1*addition)));
           tree.packColumn();
           tree.refresh();
           break;
         case Fragment:
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("Fragment EFU instructions/second", $ -> String.format("%.3f", 1000000 * (0.5+1*Math.random())));
-          tree.addColumn("Fragment ALU instructions/second", $ -> String.format("%.3f", 4000000 * (0.5+1*Math.random())));
-          tree.addColumn("Fragment instructions/second", $ -> String.format("%.3f", 60000000 * (0.5+1*Math.random())));
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          tree.addColumn("Fragment EFU instructions/second", $ -> String.format("%.3f", 1000000 * (0.5+1*addition)));
+          tree.addColumn("Fragment ALU instructions/second", $ -> String.format("%.3f", 4000000 * (0.5+1*addition)));
+          tree.addColumn("Fragment instructions/second", $ -> String.format("%.3f", 60000000 * (0.5+1*addition)));
           tree.packColumn();
           tree.refresh();
           break;
         case Favorite:
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("", $ -> "");
-          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*Math.random())));
-          tree.addColumn("GPU frequency", $ -> String.format("%.3f", 240000000.0 * (0.8+0.4*Math.random())));
-          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*Math.random())));
-          tree.addColumn("Texture L1 miss rate", $ -> String.format("%.3f", 60 * (0.5+1*Math.random())));
-          tree.addColumn("Texture fetch stall", $ -> String.format("%.3f", 6 * (0.5+1*Math.random())));
-          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*Math.random())));
-
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          // tree.addColumn("", $ -> "");
+          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*addition)));
+          tree.addColumn("GPU frequency", $ -> String.format("%.3f", 240000000.0 * (0.8+0.4*addition)));
+          tree.addColumn("Texture/vertex", $ -> String.format("%.3f", 0.05 * (0.5+1*addition)));
+          tree.addColumn("Texture L1 miss rate", $ -> String.format("%.3f", 60 * (0.5+1*addition)));
+          tree.addColumn("Texture fetch stall", $ -> String.format("%.3f", 6 * (0.5+1*addition)));
+          tree.addColumn("GPU utilization", $ -> String.format("%.3f", 40 * (0.8+0.4*addition)));
           tree.packColumn();
           tree.refresh();
           break;
       }
+
+      for (int j = 1; j < tree.getTree().getTree().getColumnCount(); j++) {
+        double min = Double.MAX_VALUE, max = 0;
+        if (tree.getTree().getTree().getItem(0).getText(j).equals("")) {
+          continue;
+        }
+        for (int i = 0; i < tree.getTree().getTree().getItemCount(); i++) {
+          double v = Double.parseDouble(tree.getTree().getTree().getItem(i).getText(j));
+          min = Math.min(min, v);
+          max = Math.max(max, v);
+          // System.out.println(tree.getTree().getTree().getItem(i).getText(0));
+        }
+        double mid = (min + max) / 2;
+
+        for (int i = 0; i < tree.getTree().getTree().getItemCount(); i++) {
+          double v = Double.parseDouble(tree.getTree().getTree().getItem(i).getText(j));
+          if (v > mid) {
+            tree.getTree().getTree().getItem(i).setText(j, "widgets.theme.memoryFirstLevelBackground()");
+          }
+        }
+      }
+
+      tree.getTree().getTree().getItem(1).setBackground(1, widgets.theme.memoryFirstLevelBackground());
+
+      // for (TreeItem item : tree.getTree().getTree().getItems()) {
+      //   // Give visual hint to the elements of level 1.
+      //   item.setBackground(widgets.theme.memoryFirstLevelBackground());
+      // }
+      // tree.refresh();
+
     });
     // modeSelector.accept(MouseMode.All);
 
