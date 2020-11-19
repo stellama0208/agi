@@ -205,7 +205,8 @@ func (API) ResolveSynchronization(ctx context.Context, d *sync.Data, c *path.Cap
 	walkCommandBuffer = func(cb CommandBufferObjectʳ, idx api.SubCmdIdx, id api.CmdID, order uint64) ([]sync.SubcommandReference, []api.SubCmdIdx) {
 		refs := make([]sync.SubcommandReference, 0)
 		subgroups := make([]api.SubCmdIdx, 0)
-		lastSubpass := 0
+		nextSubpass := 0
+		renderPassIndex := api.SubCmdIdx{}
 		nCommands := uint64(cb.CommandReferences().Len())
 		canStartDrawGrouping := true
 
@@ -248,7 +249,7 @@ func (API) ResolveSynchronization(ctx context.Context, d *sync.Data, c *path.Cap
 						ty:     DrawGroupMarker,
 						start:  uint64(i),
 						end:    uint64(i),
-						parent: append(api.SubCmdIdx{}, idx...),
+						parent: renderPassIndex,
 					})
 				canStartDrawGrouping = false
 			} else if isDrawCmd && !canStartDrawGrouping {
@@ -306,34 +307,39 @@ func (API) ResolveSynchronization(ctx context.Context, d *sync.Data, c *path.Cap
 						end:    uint64(i),
 						parent: append(api.SubCmdIdx{}, idx...),
 					})
-				lastSubpass = 0
+				nextSubpass = 0
+				renderPassIndex = append(append(api.SubCmdIdx{}, idx...), uint64(i))
 				if rp.SubpassDescriptions().Len() > 1 {
-					name = fmt.Sprintf("Subpass: %v", lastSubpass)
+					name = fmt.Sprintf("Subpass: %v", nextSubpass)
 					markerStack = append(markerStack,
 						&markerInfo{
 							name:   name,
 							ty:     RenderPassMarker,
 							start:  uint64(i),
 							end:    uint64(i),
-							parent: append(api.SubCmdIdx{}, idx...),
+							parent: renderPassIndex,
 						})
+					nextSubpass++
 				}
 				break
 			case VkCmdEndRenderPassArgsʳ:
 				popMarker(RenderPassMarker, uint64(i), nCommands)
+				if nextSubpass > 0 {
+					popMarker(RenderPassMarker, uint64(i), nCommands)
+				}
 				break
 			case VkCmdNextSubpassArgsʳ:
-				lastSubpass++
 				popMarker(RenderPassMarker, uint64(i), nCommands)
-				name := fmt.Sprintf("Subpass: %v", lastSubpass)
+				name := fmt.Sprintf("Subpass: %v", nextSubpass)
 				markerStack = append(markerStack,
 					&markerInfo{
 						name:   name,
 						ty:     RenderPassMarker,
 						start:  uint64(i),
 						end:    uint64(i),
-						parent: append(api.SubCmdIdx{}, idx...),
+						parent: renderPassIndex,
 					})
+				nextSubpass++
 			case VkCmdDebugMarkerBeginEXTArgsʳ:
 				markerStack = append(markerStack,
 					&markerInfo{

@@ -402,29 +402,30 @@ func (a API) GetReplayPriority(ctx context.Context, i *device.Instance, h *captu
 		if len(traceVkDriver.GetPhysicalDevices()) == 0 {
 			return 1, messages.ReplayCompatibilityCompatible()
 		}
-		// Requires same GPU vendor, GPU device, Vulkan driver and Vulkan API version.
-		for _, devPhyInfo := range devVkDriver.GetPhysicalDevices() {
-			for _, tracePhyInfo := range traceVkDriver.GetPhysicalDevices() {
-				if devPhyInfo.GetVendorId() != tracePhyInfo.GetVendorId() {
-					reason = messages.ReplayCompatibilityIncompatibleGpu(devPhyInfo.GetDeviceName(), tracePhyInfo.GetDeviceName())
-					continue
-				}
-				if devPhyInfo.GetDeviceId() != tracePhyInfo.GetDeviceId() {
-					reason = messages.ReplayCompatibilityIncompatibleGpu(devPhyInfo.GetDeviceName(), tracePhyInfo.GetDeviceName())
-					continue
-				}
-				if devPhyInfo.GetDriverVersion() != tracePhyInfo.GetDriverVersion() {
-					reason = messages.ReplayCompatibilityIncompatibleDriverVersion(devPhyInfo.GetDriverVersion(), tracePhyInfo.GetDriverVersion())
-					continue
-				}
-				// Ignore the API patch level (bottom 12 bits) when comparing the API version.
-				if (devPhyInfo.GetApiVersion() & ^uint32(0xfff)) != (tracePhyInfo.GetApiVersion() & ^uint32(0xfff)) {
-					reason = messages.ReplayCompatibilityIncompatibleApiVersion(devPhyInfo.GetApiVersion(), tracePhyInfo.GetApiVersion())
-					continue
-				}
-				return 1, messages.ReplayCompatibilityCompatible()
-			}
-		}
+		return 1, messages.ReplayCompatibilityCompatible()
+		//// Requires same GPU vendor, GPU device, Vulkan driver and Vulkan API version.
+		//for _, devPhyInfo := range devVkDriver.GetPhysicalDevices() {
+		//	for _, tracePhyInfo := range traceVkDriver.GetPhysicalDevices() {
+		//		if devPhyInfo.GetVendorId() != tracePhyInfo.GetVendorId() {
+		//			reason = messages.ReplayCompatibilityIncompatibleGpu(devPhyInfo.GetDeviceName(), tracePhyInfo.GetDeviceName())
+		//			continue
+		//		}
+		//		if devPhyInfo.GetDeviceId() != tracePhyInfo.GetDeviceId() {
+		//			reason = messages.ReplayCompatibilityIncompatibleGpu(devPhyInfo.GetDeviceName(), tracePhyInfo.GetDeviceName())
+		//			continue
+		//		}
+		//		if devPhyInfo.GetDriverVersion() != tracePhyInfo.GetDriverVersion() {
+		//			reason = messages.ReplayCompatibilityIncompatibleDriverVersion(devPhyInfo.GetDriverVersion(), tracePhyInfo.GetDriverVersion())
+		//			continue
+		//		}
+		//		// Ignore the API patch level (bottom 12 bits) when comparing the API version.
+		//		if (devPhyInfo.GetApiVersion() & ^uint32(0xfff)) != (tracePhyInfo.GetApiVersion() & ^uint32(0xfff)) {
+		//			reason = messages.ReplayCompatibilityIncompatibleApiVersion(devPhyInfo.GetApiVersion(), tracePhyInfo.GetApiVersion())
+		//			continue
+		//		}
+		//		return 1, messages.ReplayCompatibilityCompatible()
+		//	}
+		//}
 	}
 
 	if reason == nil {
