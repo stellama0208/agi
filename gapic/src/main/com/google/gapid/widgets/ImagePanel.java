@@ -696,7 +696,7 @@ public class ImagePanel extends Composite implements Loadable {
     private final Consumer<AlphaWarning> showAlphaWarning;
     private final boolean naturallyFlipped;
 
-    private final ScrollBar scrollbars[];
+    // private final ScrollBar scrollbars[];
     private final ScenePanel<SceneData> canvas;
     protected final SceneData data;
     private Image[] images = {};
@@ -720,14 +720,14 @@ public class ImagePanel extends Composite implements Loadable {
 
     public ImageComponent(Composite parent, Theme theme, Consumer<AlphaWarning> showAlphaWarning,
         boolean naturallyFlipped) {
-      super(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.NO_BACKGROUND);
+      super(parent, SWT.NO_BACKGROUND);
       setLayout(new FillLayout(SWT.VERTICAL));
-      disableAutoHideScrollbars(this);
+      // disableAutoHideScrollbars(this);
 
       this.showAlphaWarning = showAlphaWarning;
       this.naturallyFlipped = naturallyFlipped;
 
-      scrollbars = new ScrollBar[] { getHorizontalBar(), getVerticalBar() };
+      // scrollbars = new ScrollBar[] { getHorizontalBar(), getVerticalBar() };
 
       data = new SceneData();
       data.flipped = naturallyFlipped;
@@ -763,8 +763,8 @@ public class ImagePanel extends Composite implements Loadable {
       canvas = new ScenePanel<SceneData>(this, new ImageScene());
       canvas.setSceneData(data.copy());
 
-      getHorizontalBar().addListener(SWT.Selection, e -> onScroll());
-      getVerticalBar().addListener(SWT.Selection, e -> onScroll());
+      // getHorizontalBar().addListener(SWT.Selection, e -> onScroll());
+      // getVerticalBar().addListener(SWT.Selection, e -> onScroll());
       canvas.addListener(SWT.Resize, e -> onResize());
 
       // Prevent the mouse wheel from scrolling the view.
@@ -1031,7 +1031,7 @@ public class ImagePanel extends Composite implements Loadable {
 
       viewSize = new VecD(area.width, area.height, 0);
       updateScaleLimits();
-      updateZoomFromMode();
+      // updateZoomFromMode();
     }
 
     private void updateScaleLimits() {
@@ -1044,40 +1044,40 @@ public class ImagePanel extends Composite implements Loadable {
     }
 
     private void updateScrollbars() {
-      for (int i = 0; i < scrollbars.length; i++) {
-        ScrollBar scrollbar = scrollbars[i];
-        int val = (int)(viewOffset.get(i) * scaleGridToView); // offset in view pixels
-        int min = (int)(viewOffsetMin.get(i) * scaleGridToView); // min movement in view pixels
-        int max = (int)(viewOffsetMax.get(i) * scaleGridToView); // max movement in view pixels
-        int rng = max - min;
-        if (rng == 0) {
-          scrollbar.setEnabled(false);
-          scrollbar.setValues(0, 0, 1, 1, 1, 1);
-        } else {
-          int size = (int)this.viewSize.get(i);
-          scrollbar.setEnabled(true);
-          scrollbar.setValues(
-              val - min,        // selection
-              0,                // min
-              size + rng,       // max
-              size,             // thumb
-              (rng + 99) / 100, // increment
-              (rng + 9) / 10    // page increment
-          );
-        }
-      }
+      // for (int i = 0; i < scrollbars.length; i++) {
+      //   ScrollBar scrollbar = scrollbars[i];
+      //   int val = (int)(viewOffset.get(i) * scaleGridToView); // offset in view pixels
+      //   int min = (int)(viewOffsetMin.get(i) * scaleGridToView); // min movement in view pixels
+      //   int max = (int)(viewOffsetMax.get(i) * scaleGridToView); // max movement in view pixels
+      //   int rng = max - min;
+      //   if (rng == 0) {
+      //     scrollbar.setEnabled(false);
+      //     scrollbar.setValues(0, 0, 1, 1, 1, 1);
+      //   } else {
+      //     int size = (int)this.viewSize.get(i);
+      //     scrollbar.setEnabled(true);
+      //     scrollbar.setValues(
+      //         val - min,        // selection
+      //         0,                // min
+      //         size + rng,       // max
+      //         size,             // thumb
+      //         (rng + 99) / 100, // increment
+      //         (rng + 9) / 10    // page increment
+      //     );
+      //   }
+      // }
     }
 
     private void onScroll() {
-      for (int i = 0; i < scrollbars.length; i++) {
-        ScrollBar scrollbar = scrollbars[i];
-        if (scrollbar.getEnabled()) {
-          int min = (int)(viewOffsetMin.get(i) * scaleGridToView); // min movement in view pixels
-          int val = min + scrollbar.getSelection();
-          viewOffset = viewOffset.set(i, val / scaleGridToView);
-        }
-      }
-      refresh();
+      // for (int i = 0; i < scrollbars.length; i++) {
+      //   ScrollBar scrollbar = scrollbars[i];
+      //   if (scrollbar.getEnabled()) {
+      //     int min = (int)(viewOffsetMin.get(i) * scaleGridToView); // min movement in view pixels
+      //     int val = min + scrollbar.getSelection();
+      //     viewOffset = viewOffset.set(i, val / scaleGridToView);
+      //   }
+      // }
+      // refresh();
     }
   }
 
